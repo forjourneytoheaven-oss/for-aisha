@@ -1,107 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<title>For You 💖</title>
+<title>Private Chat 💬</title>
 
 <style>
 body {
     margin: 0;
-    overflow: hidden;
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    font-family: Arial;
+    background: #111;
     color: white;
-    text-align: center;
 }
 
-h1 {
-    margin-top: 80px;
-    font-size: 2.5em;
+.chat {
+    height: 85vh;
+    overflow-y: auto;
+    padding: 10px;
 }
 
-#text {
-    margin-top: 30px;
-    font-size: 1.4em;
-    min-height: 60px;
-    padding: 0 20px;
+.msg {
+    margin: 10px;
+    padding: 10px 15px;
+    border-radius: 15px;
+    max-width: 70%;
+}
+
+.me { background: #ff4d6d; margin-left: auto; }
+.other { background: #333; }
+
+.input-box {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+input {
+    flex: 1;
+    padding: 15px;
+    border: none;
 }
 
 button {
-    margin-top: 40px;
-    padding: 12px 25px;
+    padding: 15px;
     border: none;
-    border-radius: 12px;
-    background: white;
-    color: #ff4d6d;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-button:hover {
-    transform: scale(1.1);
-}
-
-.heart {
-    position: absolute;
-    color: pink;
-    animation: fall linear infinite;
-}
-
-@keyframes fall {
-    0% { transform: translateY(-10px); opacity: 1; }
-    100% { transform: translateY(100vh); opacity: 0; }
+    background: #ff4d6d;
+    color: white;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Hey ikaw 😏</h1>
-<div id="text">Click mo muna ↓</div>
-<button onclick="nextMessage()">Click me 💕</button>
+<div class="chat" id="chat"></div>
+
+<div class="input-box">
+    <input id="msg" placeholder="Type message...">
+    <button onclick="send()">Send</button>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 
 <script>
-const messages = [
-    "May gusto lang akong sabihin...",
-    "Simula nung nakilala kita...",
-    "Parang nag iba yung araw ko",
-    "Mas napapangiti ako bigla 😄",
-    "At hinahanap-hanap kita",
-    "Hindi ko to inaasahan...",
-    "Pero baka ma-fall na ako sa’yo 😳",
-    "So stay ka lang ha?",
-    "Kasi ikaw lang eh 💖"
-];
+// 🔥 CONFIG (isi dari Firebase nanti)
+const firebaseConfig = {
+  apiKey: "AIzaSyAyVU9uwtZmugQuQOSz_4Bph3SR46O4Xqs",
+  authDomain: "dawn-38a84.firebaseapp.com",
+  databaseURL: "https://dawn-38a84-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "dawn-38a84",
+};
 
-let i = 0;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-function nextMessage() {
-    if (i < messages.length) {
-        document.getElementById("text").innerHTML = messages[i];
-        i++;
-    } else {
-        document.getElementById("text").innerHTML =
-        "Ikaw lang talaga ❤️<br><br>Galing sa’kin, Ghesa 💖";
-    }
+// 🔑 ROOM
+const room = prompt("Masukin kode room (contoh: aisha123)");
+const username = prompt("Nama kamu:");
+
+function send() {
+    let text = document.getElementById("msg").value;
+    if (!text) return;
+
+    db.ref("chat/" + room).push({
+        name: username,
+        text: text
+    });
+
+    document.getElementById("msg").value = "";
 }
 
-// efek love jatuh
-setInterval(() => {
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.innerHTML = "💖";
+db.ref("chat/" + room).on("child_added", snap => {
+    let data = snap.val();
 
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
-    heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+    let div = document.createElement("div");
+    div.className = "msg " + (data.name === username ? "me" : "other");
+    div.innerText = data.name + ": " + data.text;
 
-    document.body.appendChild(heart);
-
-    setTimeout(() => {
-        heart.remove();
-    }, 5000);
-}, 300);
+    document.getElementById("chat").appendChild(div);
+    document.getElementById("chat").scrollTop = 9999;
+});
 </script>
 
 </body>
