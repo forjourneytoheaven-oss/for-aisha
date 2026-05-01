@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For You 💖</title>
+
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    margin-top: 80px;
+    font-size: 2.5em;
+}
+
+#text {
+    margin-top: 30px;
+    font-size: 1.4em;
+    min-height: 60px;
+    padding: 0 20px;
+}
+
+button {
+    margin-top: 40px;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    background: white;
+    color: #ff4d6d;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+.heart {
+    position: absolute;
+    color: pink;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    0% { transform: translateY(-10px); opacity: 1; }
+    100% { transform: translateY(100vh); opacity: 0; }
+}
+</style>
+</head>
+
+<body>
+
+<h1>Hey ikaw 😏</h1>
+<div id="text">Click mo muna ↓</div>
+<button onclick="nextMessage()">Click me 💕</button>
+
+<script>
+const messages = [
+    "May gusto lang akong sabihin...",
+    "Simula nung nakilala kita...",
+    "Parang nag iba yung araw ko",
+    "Mas napapangiti ako bigla 😄",
+    "At hinahanap-hanap kita",
+    "Hindi ko to inaasahan...",
+    "Pero baka ma-fall na ako sa’yo 😳",
+    "So stay ka lang ha?",
+    "Kasi ikaw lang eh 💖"
+];
+
+let i = 0;
+
+function nextMessage() {
+    if (i < messages.length) {
+        document.getElementById("text").innerHTML = messages[i];
+        i++;
+    } else {
+        document.getElementById("text").innerHTML =
+        "Ikaw lang talaga ❤️<br><br>Galing sa’kin, Ghesa 💖";
+    }
+}
+
+// efek love jatuh
+setInterval(() => {
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.innerHTML = "💖";
+
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.fontSize = (Math.random() * 20 + 10) + "px";
+    heart.style.animationDuration = (Math.random() * 3 + 2) + "s";
+
+    document.body.appendChild(heart);
+
+    setTimeout(() => {
+        heart.remove();
+    }, 5000);
+}, 300);
+</script>
+
+</body>
+</html>
